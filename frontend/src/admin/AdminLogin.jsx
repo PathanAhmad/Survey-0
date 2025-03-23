@@ -8,7 +8,16 @@ const AdminLogin = ({ onLogin }) => {
   const handleLogin = (e) => {
     e.preventDefault()
 
-    if (username === 'sarahundre12' && password === 'YxnGx10yUe2x') {
+    const validLogins = [
+      { username: 'sarahundre12', password: 'YxnGx10yUe2x' },
+      { username: 'scott', password: 'ScottAdmin123' }
+    ]
+
+    const isValid = validLogins.some(
+      (user) => user.username === username && user.password === password
+    )
+
+    if (isValid) {
       onLogin()
     } else {
       setError('用户名或密码错误 (Invalid username or password)')
