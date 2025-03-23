@@ -9,7 +9,7 @@ const AdminLogin = ({ onLogin }) => {
     e.preventDefault()
 
     const validLogins = [
-      { username: 'sarahundre12', password: 'YxnGx10yUe2x' },
+      { username: 'sarahundre12', password: 'Sarah123' },
       { username: 'scott', password: 'Scott123' }
     ]
 
