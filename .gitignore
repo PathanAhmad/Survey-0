@@ -1,0 +1,36 @@
+# === Common ===
+node_modules/
+.env
+*.log
+*.log.*
+
+# === Windows specific ===
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# === Vite / React / Frontend ===
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.DS_Store
+
+# === Express / Backend ===
+backend/node_modules/
+backend/.env
+backend/logs/
+backend/uploads/
+backend/tmp/
+backend/.DS_Store
+
+# === Editor / OS stuff ===
+.vscode/
+*.swp
+*.swo
+*.swn
+
+# === Build artifacts ===
+build/
+coverage/
