@@ -10,7 +10,7 @@ const AdminLogin = ({ onLogin }) => {
 
     const validLogins = [
       { username: 'sarahundre12', password: 'YxnGx10yUe2x' },
-      { username: 'scott', password: 'ScottAdmin123' }
+      { username: 'scott', password: 'Scott123' }
     ]
 
     const isValid = validLogins.some(
