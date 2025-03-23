@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+const baseURL = import.meta.env.VITE_API_BASE_URL
 
 const CreateSurvey = ({ onSuccess }) => {
   const [pages, setPages] = useState([])
@@ -26,14 +27,14 @@ const CreateSurvey = ({ onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     for (const page of pages) {
-      const res = await fetch('http://localhost:5000/api/admin/page', {
+      const res = await fetch(`${baseURL}/admin/page`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: page.title })
       })
       const savedPage = await res.json()
       for (const q of page.questions) {
-        await fetch(`http://localhost:5000/api/admin/page/${savedPage._id}/question`, {
+        await fetch(`${baseURL}/admin/page/${savedPage._id}/question`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(q)

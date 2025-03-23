@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+const baseURL = import.meta.env.VITE_API_BASE_URL
 
 const UserSurvey = () => {
   const [info, setInfo] = useState({
@@ -14,7 +15,7 @@ const UserSurvey = () => {
 
   useEffect(() => {
     if (step === 1) {
-      fetch('http://localhost:5000/api/admin/pages')
+      fetch(`${baseURL}/admin/pages`)
         .then(res => res.json())
         .then(data => {
           setPages(data)
@@ -72,7 +73,7 @@ const UserSurvey = () => {
     }
   
     try {
-      await fetch('http://localhost:5000/api/survey/submit', {
+      await fetch('${baseURL}/survey/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

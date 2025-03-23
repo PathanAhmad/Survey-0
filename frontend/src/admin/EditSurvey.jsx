@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
+const baseURL = import.meta.env.VITE_API_BASE_URL
 
 const EditSurvey = () => {
   const [pages, setPages] = useState([])
 
   const fetchPages = async () => {
-    const res = await fetch('http://localhost:5000/api/admin/pages')
+    const res = await fetch(`${baseURL}/admin/pages`)
     const data = await res.json()
     setPages(data)
   }
@@ -17,7 +18,7 @@ const EditSurvey = () => {
     const page = pages.find(p => p._id === pageId)
     page.questions[qIndex][field] = value
 
-    await fetch(`http://localhost:5000/api/admin/page/${pageId}`, {
+    await fetch(`${baseURL}/admin/page/${pageId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ questions: page.questions })
