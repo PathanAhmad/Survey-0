@@ -28,7 +28,7 @@ const AdminLogin = ({ onLogin }) => {
             <input
               type="text"
               placeholder="请输入用户名 (e.g. admin123)"
-              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black placeholder-gray-500"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -39,7 +39,7 @@ const AdminLogin = ({ onLogin }) => {
             <input
               type="password"
               placeholder="请输入密码 (e.g. ********)"
-              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black placeholder-gray-500"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -52,7 +52,7 @@ const AdminLogin = ({ onLogin }) => {
           <button
             type="submit"
             disabled={!isFormValid}
-            className={`w-full py-2 px-4 rounded font-medium text-white transition ${
+            className={`w-full py-2 px-4 rounded font-medium text-black transition ${
               isFormValid
                 ? 'bg-blue-600 hover:bg-blue-700'
                 : 'bg-blue-300 cursor-not-allowed'
