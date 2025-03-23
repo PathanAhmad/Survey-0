@@ -10,11 +10,13 @@ const UserSurvey = () => {
   const [responses, setResponses] = useState({})
   const [activeQuestionIndex, setActiveQuestionIndex] = useState({})
   const [currentPageIndex, setCurrentPageIndex] = useState(0)
+  const [loading, setLoading] = useState(false) // 🔹 NEW: loading state
 
   const isFormValid = info.name && info.age && info.gender && info.school && info.robot
 
   useEffect(() => {
     if (step === 1) {
+      setLoading(true)
       fetch(`${baseURL}/admin/pages`)
         .then(res => res.json())
         .then(data => {
@@ -29,6 +31,7 @@ const UserSurvey = () => {
           console.error('Error fetching survey pages:', err)
           alert('问卷加载失败 (Failed to load survey)')
         })
+        .finally(() => setLoading(false)) // 🔹 NEW: stop loading
     }
   }, [step])
 
@@ -48,7 +51,7 @@ const UserSurvey = () => {
 
   const handleSubmit = async () => {
     const answers = []
-  
+
     for (const page of pages) {
       page.questions.forEach((q, idx) => {
         const key = `${page._id}|${idx}`
@@ -63,7 +66,7 @@ const UserSurvey = () => {
         }
       })
     }
-  
+
     const payload = {
       name: info.name,
       age: info.age,
@@ -71,14 +74,14 @@ const UserSurvey = () => {
       school: info.school,
       answers
     }
-  
+
     try {
       await fetch(`${baseURL}/survey/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       })
-  
+
       alert('提交成功！(Submitted successfully!)')
       setStep(0)
       setInfo({ name: '', age: '', gender: '', school: '', robot: false })
@@ -90,12 +93,44 @@ const UserSurvey = () => {
       alert('提交失败，请重试 (Submission failed)')
     }
   }
-  
 
+  if (loading) {
+    return (
+      <div className="relative min-h-screen w-screen bg-white flex items-center justify-center">
+        {/* Blurred Background */}
+        <div className="absolute inset-0 backdrop-blur-sm bg-white/60 z-0" />
+  
+        {/* Spinner */}
+        <div className="z-10 flex flex-col items-center justify-center">
+          <svg
+            className="animate-spin h-12 w-12 text-blue-600 mb-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            ></path>
+          </svg>
+          <p className="text-lg text-gray-700">加载中，请稍候… (Loading, please wait...)</p>
+        </div>
+      </div>
+    )
+  }  
 
   if (step === 0) {
     return (
-     <div className="min-h-screen w-screen bg-white flex items-center justify-center px-4">
+      <div className="min-h-screen w-screen bg-white flex items-center justify-center px-4">
         <div className="w-full max-w-lg bg-white rounded-xl p-8 space-y-6">
           <h2 className="text-2xl font-semibold text-gray-800 text-center">填写您的信息</h2>
           <h2 className="text-2xl font-semibold text-gray-400 text-center">Fill in your information</h2>
@@ -107,9 +142,9 @@ const UserSurvey = () => {
                   type={field === 'age' ? 'number' : 'text'}
                   placeholder={
                     field === 'name' ? '例如：李雷 (e.g. Li Lei)' :
-                    field === 'age' ? '例如: (e.g. 20)' :
-                    field === 'gender' ? '例如：男 / 女 (e.g. Male / Female)' :
-                    '例如：悦谷学习社区 (e.g. Yuegu Learning Community)'
+                      field === 'age' ? '例如: (e.g. 20)' :
+                        field === 'gender' ? '例如：男 / 女 (e.g. Male / Female)' :
+                          '例如：悦谷学习社区 (e.g. Yuegu Learning Community)'
                   }
                   className="w-full border border-gray-300 rounded px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                   value={info[field]}
@@ -149,7 +184,6 @@ const UserSurvey = () => {
     <div className="min-h-screen w-screen bg-white px-4 py-10">
       <div className="w-full max-w-[1200px] mx-auto bg-white rounded-xl p-6 space-y-8">
         <h2 className="text-xl font-bold text-center">问卷内容 (Survey Questions)</h2>
-
         {page && (
           <div className="space-y-0">
             <h1 className="text-3xl font-bold text-blue-800 text-center tracking-wide mb-6">{page.title}</h1>
@@ -160,68 +194,50 @@ const UserSurvey = () => {
 
               return (
                 <React.Fragment key={index}>
-                  <div
-                    className={`bg-white rounded-xl px-6 py-[45px] space-y-4 transition-opacity ${
-                      isUnlocked ? (isCurrent ? 'opacity-100' : 'opacity-50') : 'opacity-40 grayscale pointer-events-none'
-                    }`}
-                    style={{ minHeight: '225.6px' }}
-                  >
+                  <div className={`bg-white rounded-xl px-6 py-[45px] space-y-4 transition-opacity ${isUnlocked ? (isCurrent ? 'opacity-100' : 'opacity-50') : 'opacity-40 grayscale pointer-events-none'}`} style={{ minHeight: '225.6px' }}>
                     <div className="text-center mb-4 space-y-1">
                       <p className="text-2xl font-semibold text-gray-800 leading-snug">{q.chineseText}</p>
                       <p className="text-2xl text-gray-500 italic">{q.englishText}</p>
                     </div>
-
                     <div className="flex flex-col items-center justify-center mt-6">
-                    <div className="flex items-center justify-center flex-wrap gap-4">
-  <span className="text-base font-medium text-green-600 whitespace-nowrap">同意 (Agree)</span>
+                      <div className="flex items-center justify-center flex-wrap gap-4">
+                        <span className="text-base font-medium text-green-600 whitespace-nowrap">同意 (Agree)</span>
+                        <div className="flex items-center justify-center gap-4 ml-6">
+                          {[1, 2, 3, 4, 5, 6, 7].map((num) => {
+                            const sizeClass =
+                              num === 1 || num === 7 ? 'w-[70px] h-[70px]' :
+                                num === 2 || num === 6 ? 'w-[46px] h-[46px]' :
+                                  num === 3 || num === 5 ? 'w-[38px] h-[38px]' : 'w-[26px] h-[26px]'
 
-  <div className="flex items-center justify-center gap-4 ml-6">
-    {[1, 2, 3, 4, 5, 6, 7].map((num) => {
-      const sizeClass =
-        num === 1 || num === 7 ? 'w-[70px] h-[70px]' :
-        num === 2 || num === 6 ? 'w-[46px] h-[46px]' :
-        num === 3 || num === 5 ? 'w-[38px] h-[38px]' : 'w-[26px] h-[26px]'
+                            const isSelected = responses[key] === num
 
-      const isSelected = responses[key] === num
-
-      return (
-        <label key={num} className="relative flex items-center justify-center">
-          <input
-            type="radio"
-            name={key}
-            value={num}
-            checked={isSelected}
-            onChange={() => handleRadio(page._id, index, num)}
-            className={`peer appearance-none rounded-full cursor-pointer transition-all duration-200
-              ${sizeClass} border-[3px]
-              ${isSelected ? 'ring-2 ring-offset-1' : ''}
-              ${num <= 3 ? 'border-[#33A474] hover:bg-[#33A474]' :
-              num >= 5 ? 'border-[#88619A] hover:bg-[#88619A]' :
-              'border-gray-400 hover:bg-gray-400'}
-              ${isSelected ? (num <= 3 ? 'bg-[#33A474]' :
-              num >= 5 ? 'bg-[#88619A]' : 'bg-gray-400') : ''}
-            `}
-          />
-          <span
-            className={`absolute text-white text-lg pointer-events-none select-none ${sizeClass}
-              flex items-center justify-center transition-opacity duration-200
-              peer-hover:opacity-100 ${isSelected ? 'opacity-100' : 'opacity-0'}
-            `}
-          >
-            ✓
-          </span>
-        </label>
-      )
-    })}
-  </div>
-
-  <span className="text-base font-medium text-purple-600 whitespace-nowrap">不同意 (Disagree)</span>
-</div>
-
+                            return (
+                              <label key={num} className="relative flex items-center justify-center">
+                                <input
+                                  type="radio"
+                                  name={key}
+                                  value={num}
+                                  checked={isSelected}
+                                  onChange={() => handleRadio(page._id, index, num)}
+                                  className={`peer appearance-none rounded-full cursor-pointer transition-all duration-200
+                                    ${sizeClass} border-[3px]
+                                    ${isSelected ? 'ring-2 ring-offset-1' : ''}
+                                    ${num <= 3 ? 'border-[#33A474] hover:bg-[#33A474]' :
+                                    num >= 5 ? 'border-[#88619A] hover:bg-[#88619A]' :
+                                    'border-gray-400 hover:bg-gray-400'}
+                                    ${isSelected ? (num <= 3 ? 'bg-[#33A474]' :
+                                    num >= 5 ? 'bg-[#88619A]' : 'bg-gray-400') : ''}
+                                  `}
+                                />
+                                <span className={`absolute text-white text-lg pointer-events-none select-none ${sizeClass} flex items-center justify-center transition-opacity duration-200 peer-hover:opacity-100 ${isSelected ? 'opacity-100' : 'opacity-0'}`}>✓</span>
+                              </label>
+                            )
+                          })}
+                        </div>
+                        <span className="text-base font-medium text-purple-600 whitespace-nowrap">不同意 (Disagree)</span>
+                      </div>
                     </div>
                   </div>
-
-                  {/* Line between question boxes */}
                   {index < page.questions.length - 1 && (
                     <hr className="border-t border-gray-300 my-10" />
                   )}
@@ -230,39 +246,14 @@ const UserSurvey = () => {
             })}
           </div>
         )}
-
         <div className="flex justify-end gap-4">
           {currentPageIndex > 0 && (
-            <button
-              onClick={() => setCurrentPageIndex(currentPageIndex - 1)}
-              className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
-            >
-              上一页 (Previous)
-            </button>
+            <button onClick={() => setCurrentPageIndex(currentPageIndex - 1)} className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">上一页 (Previous)</button>
           )}
           {currentPageIndex < pages.length - 1 ? (
-            <button
-              onClick={() => setCurrentPageIndex(currentPageIndex + 1)}
-              disabled={!allAnswered}
-              className={`px-6 py-2 rounded text-white transition ${
-                allAnswered
-                  ? 'bg-blue-600 hover:bg-blue-700'
-                  : 'bg-blue-300 cursor-not-allowed opacity-60'
-              }`}
-              
-            >
-              下一页 (Next)
-            </button>
+            <button onClick={() => setCurrentPageIndex(currentPageIndex + 1)} disabled={!allAnswered} className={`px-6 py-2 rounded text-white transition ${allAnswered ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-300 cursor-not-allowed opacity-60'}`}>下一页 (Next)</button>
           ) : (
-            <button
-              onClick={handleSubmit}
-              disabled={!allAnswered}
-              className={`px-6 py-2 rounded text-white transition ${
-                allAnswered ? 'bg-green-600 hover:bg-green-700' : 'bg-green-300 cursor-not-allowed'
-              }`}
-            >
-              提交问卷 (Submit Survey)
-            </button>
+            <button onClick={handleSubmit} disabled={!allAnswered} className={`px-6 py-2 rounded text-white transition ${allAnswered ? 'bg-green-600 hover:bg-green-700' : 'bg-green-300 cursor-not-allowed'}`}>提交问卷 (Submit Survey)</button>
           )}
         </div>
       </div>
