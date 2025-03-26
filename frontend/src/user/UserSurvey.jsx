@@ -34,6 +34,9 @@ const UserSurvey = () => {
   // For age check
   const [ageError, setAgeError] = useState('')
 
+  // (3) Use a single hoveredKey state to track which circle is hovered
+  const [hoveredKey, setHoveredKey] = useState(null)
+
   const handleAgeChange = (e) => {
     const val = e.target.value
     if (val === '' || parseInt(val) < 0) {
@@ -319,7 +322,6 @@ const UserSurvey = () => {
     >
       <button
         onClick={() => {
-          // exit the survey => step=0
           setStep(0)
           setPages([])
           setResponses({})
@@ -345,7 +347,7 @@ const UserSurvey = () => {
 
       <div className="pt-40 px-6 w-full max-w-4xl mx-auto transition-all duration-700">
         <h2
-          className="text-3xl font-bold mb-4 text-center"
+          className="text-3xl font-bold mb-4 text-center pb-24"
           style={{ color: COLORS.heading }}
         >
           {page?.title}
@@ -357,35 +359,47 @@ const UserSurvey = () => {
           const isDisabled = !isUnlocked ? 'pointer-events-none opacity-50' : ''
 
           return (
-            // 1) More vertical spacing => changed mb-6 to mb-10
             <div
-              className={`mb-10 flex flex-col items-center text-center ${isDisabled}`}
               key={index}
+              // (2) More vertical spacing + thin gray line
+              className={`mb-24 flex flex-col items-center text-center ${isDisabled} w-full border-b border-gray-300 pb-24`}
             >
-              {/* 2) Increase Chinese text size from text-lg to text-xl */}
               <p
                 className="text-xl font-semibold"
                 style={{ color: COLORS.heading }}
               >
                 {q.chineseText}
               </p>
-              {/* Also increase the English text size from default to text-lg */}
-              <p className="mb-2 text-lg" style={{ color: COLORS.muted }}>
+              <p className="mb-4 text-lg" style={{ color: COLORS.muted }}>
                 {q.englishText}
               </p>
 
               <div className="flex items-center justify-center space-x-3">
+                <span className="text-sm text-green-500 text-m">Agree</span>
+
                 {[1, 2, 3, 4, 5, 6, 7].map((num) => {
+                  const circleKey = `${page._id}|${index}|${num}`
                   const isSelected = responses[key] === num
+
+                  // We'll see if user is hovering on this circle:
+                  const isHovered = hoveredKey === circleKey
 
                   let borderColor = '#888'
                   if (num <= 3) borderColor = COLORS.brandGreen
                   if (num >= 5) borderColor = COLORS.brandPurple
 
-                  let bgColor = 'transparent'
-                  if (isSelected && num <= 3) bgColor = COLORS.brandGreen
-                  if (isSelected && num >= 5) bgColor = COLORS.brandPurple
-                  if (isSelected && num === 4) bgColor = COLORS.brandGray
+                  let baseBg = 'transparent'
+                  if (isSelected) {
+                    if (num <= 3) baseBg = COLORS.brandGreen
+                    if (num >= 5) baseBg = COLORS.brandPurple
+                    if (num === 4) baseBg = COLORS.brandGray
+                  }
+
+                  // if hovered, fill with border color
+                  const finalBg = isHovered && !isSelected ? borderColor : baseBg
+
+                  // if hovered or selected => show check
+                  const showCheck = isHovered || isSelected
 
                   let size = 'w-6 h-6'
                   if (num === 1 || num === 7) size = 'w-12 h-12'
@@ -393,7 +407,7 @@ const UserSurvey = () => {
                   if (num === 3 || num === 5) size = 'w-8 h-8'
 
                   return (
-                    <label key={num} className="cursor-pointer">
+                    <label key={circleKey} className="cursor-pointer">
                       <input
                         type="radio"
                         name={key}
@@ -403,17 +417,19 @@ const UserSurvey = () => {
                         className="hidden"
                       />
                       <div
+                        onMouseEnter={() => setHoveredKey(circleKey)}
+                        onMouseLeave={() => setHoveredKey(null)}
                         className={`
-                          rounded-full border-4 flex items-center justify-center
+                          rounded-full border-3 flex items-center justify-center
                           transition-all duration-300
                           ${size}
                         `}
                         style={{
                           borderColor,
-                          backgroundColor: bgColor,
+                          backgroundColor: finalBg,
                         }}
                       >
-                        {isSelected && (
+                        {showCheck && (
                           <span className="text-white font-bold text-lg">
                             ✓
                           </span>
@@ -422,6 +438,8 @@ const UserSurvey = () => {
                     </label>
                   )
                 })}
+
+                <span className="text-sm text-purple-500 text-m">Disagree</span>
               </div>
             </div>
           )
@@ -452,23 +470,19 @@ const UserSurvey = () => {
       {currentPageIndex < pages.length - 1 ? (
         <button
           onClick={() => setCurrentPageIndex(currentPageIndex + 1)}
-          disabled={!page?.questions.every((_, i) => responses[`${page._id}|${i}`])}
+          disabled={!allAnswered}
           style={{
             position: 'fixed',
             top: '50%',
             right: '2rem',
             transform: 'translateY(-50%)',
-            backgroundColor: page?.questions.every((_, i) => responses[`${page._id}|${i}`])
-              ? COLORS.brandGreen
-              : COLORS.buttonDisabled,
+            backgroundColor: allAnswered ? COLORS.brandGreen : COLORS.buttonDisabled,
             color: 'white',
             padding: '1rem 2rem',
             fontSize: '1.25rem',
             fontWeight: 'bold',
             borderRadius: '9999px',
-            cursor: page?.questions.every((_, i) => responses[`${page._id}|${i}`])
-              ? 'pointer'
-              : 'not-allowed',
+            cursor: allAnswered ? 'pointer' : 'not-allowed',
           }}
         >
           Next →
@@ -476,23 +490,19 @@ const UserSurvey = () => {
       ) : (
         <button
           onClick={handleSubmit}
-          disabled={!page?.questions.every((_, i) => responses[`${page._id}|${i}`])}
+          disabled={!allAnswered}
           style={{
             position: 'fixed',
             top: '50%',
             right: '2rem',
             transform: 'translateY(-50%)',
-            backgroundColor: page?.questions.every((_, i) => responses[`${page._id}|${i}`])
-              ? COLORS.brandGreen
-              : COLORS.buttonDisabled,
+            backgroundColor: allAnswered ? COLORS.brandGreen : COLORS.buttonDisabled,
             color: 'white',
             padding: '1rem 2rem',
             fontSize: '1.25rem',
             fontWeight: 'bold',
             borderRadius: '9999px',
-            cursor: page?.questions.every((_, i) => responses[`${page._id}|${i}`])
-              ? 'pointer'
-              : 'not-allowed',
+            cursor: allAnswered ? 'pointer' : 'not-allowed',
           }}
         >
           Submit

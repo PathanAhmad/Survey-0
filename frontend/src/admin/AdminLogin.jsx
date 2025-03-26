@@ -89,7 +89,7 @@ const AdminLogin = ({ onLogin }) => {
           <button
             type="submit"
             disabled={!isFormValid}
-            className={`w-full py-2 px-4 rounded font-medium text-black transition ${
+            className={`w-full py-2 px-4 rounded font-medium text-white transition ${
               isFormValid
                 ? 'bg-blue-600 hover:bg-blue-700'
                 : 'bg-blue-300 cursor-not-allowed'
