@@ -179,27 +179,23 @@ const UserSurvey = () => {
         </button>
 
         <div className="pt-60 px-6 w-full max-w-md mx-auto flex flex-col items-center">
-          {/* 
-            1) Chinese text + smaller, greyed English text 
-          */}
           <h2
             className="text-3xl font-bold mb-4 text-center"
             style={{ color: COLORS.heading }}
           >
             请填写以下信息
             <br />
-            <span style={{ 
-              fontSize: '1.2rem', 
-              color: '#888', 
-              fontWeight: 'normal' 
-            }}>
+            <span
+              style={{
+                fontSize: '1.2rem',
+                color: '#888',
+                fontWeight: 'normal',
+              }}
+            >
               (Please fill out this form)
             </span>
           </h2>
 
-          {/* 
-            Full white background, padding, placeholders, etc. are all unchanged 
-          */}
           <input
             placeholder="姓名 (Name)"
             value={info.name}
@@ -292,9 +288,7 @@ const UserSurvey = () => {
           <button
             className="mt-2 px-6 py-2 rounded text-white font-semibold transition-all"
             style={{
-              backgroundColor: isFormValid
-                ? COLORS.buttonBg
-                : COLORS.buttonDisabled,
+              backgroundColor: isFormValid ? COLORS.buttonBg : COLORS.buttonDisabled,
               cursor: isFormValid ? 'pointer' : 'not-allowed',
             }}
             disabled={!isFormValid}
@@ -309,9 +303,7 @@ const UserSurvey = () => {
 
   // STEP 1: Survey
   const page = pages[currentPageIndex]
-  const allAnswered = page?.questions.every(
-    (_, i) => responses[`${page._id}|${i}`]
-  )
+  const allAnswered = page?.questions.every((_, i) => responses[`${page._id}|${i}`])
 
   return (
     <div
@@ -325,7 +317,6 @@ const UserSurvey = () => {
         color: COLORS.textBase,
       }}
     >
-      {/* Button in the top-right corner to exit the survey & go back */}
       <button
         onClick={() => {
           // exit the survey => step=0
@@ -366,17 +357,20 @@ const UserSurvey = () => {
           const isDisabled = !isUnlocked ? 'pointer-events-none opacity-50' : ''
 
           return (
+            // 1) More vertical spacing => changed mb-6 to mb-10
             <div
-              className={`mb-6 flex flex-col items-center text-center ${isDisabled}`}
+              className={`mb-10 flex flex-col items-center text-center ${isDisabled}`}
               key={index}
             >
+              {/* 2) Increase Chinese text size from text-lg to text-xl */}
               <p
-                className="text-lg font-semibold"
+                className="text-xl font-semibold"
                 style={{ color: COLORS.heading }}
               >
                 {q.chineseText}
               </p>
-              <p className="mb-2" style={{ color: COLORS.muted }}>
+              {/* Also increase the English text size from default to text-lg */}
+              <p className="mb-2 text-lg" style={{ color: COLORS.muted }}>
                 {q.englishText}
               </p>
 
@@ -458,13 +452,13 @@ const UserSurvey = () => {
       {currentPageIndex < pages.length - 1 ? (
         <button
           onClick={() => setCurrentPageIndex(currentPageIndex + 1)}
-          disabled={!allAnswered}
+          disabled={!page?.questions.every((_, i) => responses[`${page._id}|${i}`])}
           style={{
             position: 'fixed',
             top: '50%',
             right: '2rem',
             transform: 'translateY(-50%)',
-            backgroundColor: allAnswered
+            backgroundColor: page?.questions.every((_, i) => responses[`${page._id}|${i}`])
               ? COLORS.brandGreen
               : COLORS.buttonDisabled,
             color: 'white',
@@ -472,7 +466,9 @@ const UserSurvey = () => {
             fontSize: '1.25rem',
             fontWeight: 'bold',
             borderRadius: '9999px',
-            cursor: allAnswered ? 'pointer' : 'not-allowed',
+            cursor: page?.questions.every((_, i) => responses[`${page._id}|${i}`])
+              ? 'pointer'
+              : 'not-allowed',
           }}
         >
           Next →
@@ -480,13 +476,13 @@ const UserSurvey = () => {
       ) : (
         <button
           onClick={handleSubmit}
-          disabled={!allAnswered}
+          disabled={!page?.questions.every((_, i) => responses[`${page._id}|${i}`])}
           style={{
             position: 'fixed',
             top: '50%',
             right: '2rem',
             transform: 'translateY(-50%)',
-            backgroundColor: allAnswered
+            backgroundColor: page?.questions.every((_, i) => responses[`${page._id}|${i}`])
               ? COLORS.brandGreen
               : COLORS.buttonDisabled,
             color: 'white',
@@ -494,7 +490,9 @@ const UserSurvey = () => {
             fontSize: '1.25rem',
             fontWeight: 'bold',
             borderRadius: '9999px',
-            cursor: allAnswered ? 'pointer' : 'not-allowed',
+            cursor: page?.questions.every((_, i) => responses[`${page._id}|${i}`])
+              ? 'pointer'
+              : 'not-allowed',
           }}
         >
           Submit
