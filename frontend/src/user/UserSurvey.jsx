@@ -179,21 +179,29 @@ const UserSurvey = () => {
         </button>
 
         <div className="pt-60 px-6 w-full max-w-md mx-auto flex flex-col items-center">
+          {/* 
+            1) Chinese text + smaller, greyed English text 
+          */}
           <h2
             className="text-3xl font-bold mb-4 text-center"
             style={{ color: COLORS.heading }}
           >
-            Hey, fill this form here to proceed
+            请填写以下信息
+            <br />
+            <span style={{ 
+              fontSize: '1.2rem', 
+              color: '#888', 
+              fontWeight: 'normal' 
+            }}>
+              (Please fill out this form)
+            </span>
           </h2>
 
-          {/*
-            1) Full white background
-            2) Extra horizontal padding (px-3) for placeholders
-            3) More vertical padding (py-3) for a roomy, modern feel
-            4) Placeholder color for a subtle hint (placeholder-gray-500)
+          {/* 
+            Full white background, padding, placeholders, etc. are all unchanged 
           */}
           <input
-            placeholder="Name"
+            placeholder="姓名 (Name)"
             value={info.name}
             onChange={(e) => setInfo({ ...info, name: e.target.value })}
             className="
@@ -216,7 +224,7 @@ const UserSurvey = () => {
           <input
             type="number"
             min="0"
-            placeholder="Enter a number for age"
+            placeholder="年龄 (Age)"
             value={info.age}
             onChange={handleAgeChange}
             className="
@@ -240,7 +248,7 @@ const UserSurvey = () => {
           )}
 
           <input
-            placeholder="Gender"
+            placeholder="性别 (Gender)"
             value={info.gender}
             onChange={(e) => setInfo({ ...info, gender: e.target.value })}
             className="
@@ -261,7 +269,7 @@ const UserSurvey = () => {
           />
 
           <input
-            placeholder="School"
+            placeholder="学校 (School)"
             value={info.school}
             onChange={(e) => setInfo({ ...info, school: e.target.value })}
             className="
@@ -426,7 +434,6 @@ const UserSurvey = () => {
         })}
       </div>
 
-      {/* Large rectangular or pill-shaped buttons with text for Next / Previous / Submit */}
       {currentPageIndex > 0 && (
         <button
           onClick={() => setCurrentPageIndex(currentPageIndex - 1)}
