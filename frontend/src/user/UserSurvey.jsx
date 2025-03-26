@@ -366,7 +366,7 @@ const UserSurvey = () => {
             >
               <p
                 className="text-xl font-semibold"
-                style={{ color: COLORS.heading }}
+                style={{ fontSize: "28px", color: COLORS.heading }}
               >
                 {q.chineseText}
               </p>
