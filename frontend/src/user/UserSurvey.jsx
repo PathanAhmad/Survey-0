@@ -347,7 +347,7 @@ const UserSurvey = () => {
 
       <div className="pt-40 px-6 w-full max-w-4xl mx-auto transition-all duration-700">
         <h2
-          className="text-3xl font-bold mb-4 text-center pb-24"
+          className="text-3xl font-bold mb-4 text-center pb-16"
           style={{ color: COLORS.heading }}
         >
           {page?.title}
@@ -362,7 +362,7 @@ const UserSurvey = () => {
             <div
               key={index}
               // (2) More vertical spacing + thin gray line
-              className={`mb-24 flex flex-col items-center text-center ${isDisabled} w-full border-b border-gray-300 pb-24`}
+              className={`mb-16 flex flex-col items-center text-center ${isDisabled} w-full border-b border-gray-300 pb-16`}
             >
               <p
                 className="text-xl font-semibold"
