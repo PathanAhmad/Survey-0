@@ -23,7 +23,6 @@ const UserSurvey = () => {
     age: '',
     gender: '',
     school: '',
-    robot: false,
   })
   const [step, setStep] = useState(0)
   const [pages, setPages] = useState([])
@@ -51,8 +50,7 @@ const UserSurvey = () => {
     info.age &&
     !ageError &&
     info.gender &&
-    info.school &&
-    info.robot
+    info.school
 
   useEffect(() => {
     if (step === 1) {
@@ -119,7 +117,7 @@ const UserSurvey = () => {
       alert('Submitted successfully!')
       // reset
       setStep(0)
-      setInfo({ name: '', age: '', gender: '', school: '', robot: false })
+      setInfo({ name: '', age: '', gender: '', school: '' })
       setResponses({})
       setCurrentPageIndex(0)
       setActiveQuestionIndex({})
@@ -150,6 +148,7 @@ const UserSurvey = () => {
         className="
           min-h-screen w-screen bg-cover bg-center bg-no-repeat
           flex items-start justify-center
+          relative
         "
         style={{
           backgroundImage: `url('Images/Flowers.gif')`,
@@ -157,89 +156,130 @@ const UserSurvey = () => {
           color: COLORS.textBase,
         }}
       >
+        {/* Button in the top-right corner, redirect to /admin */}
+        <button
+          onClick={() => {
+            window.location.href = '/admin'
+          }}
+          style={{
+            position: 'absolute',
+            top: '1rem',
+            right: '1rem',
+            backgroundColor: COLORS.brandPink,
+            color: 'white',
+            padding: '0.5rem 1rem',
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer',
+          }}
+        >
+          Admin
+        </button>
+
         <div className="pt-60 px-6 w-full max-w-md mx-auto flex flex-col items-center">
           <h2
             className="text-3xl font-bold mb-4 text-center"
             style={{ color: COLORS.heading }}
           >
-            Fill in your information
+            Hey, fill this form here to proceed
           </h2>
 
+          {/*
+            1) Full white background
+            2) Extra horizontal padding (px-3) for placeholders
+            3) More vertical padding (py-3) for a roomy, modern feel
+            4) Placeholder color for a subtle hint (placeholder-gray-500)
+          */}
           <input
-            className="
-              w-full p-2 mb-3 rounded border focus:outline-none focus:ring-2
-              focus:ring-pink-500 text-base
-            "
             placeholder="Name"
-            style={{
-              backgroundColor: 'white',
-              borderColor: COLORS.muted,
-              color: COLORS.textBase,
-            }}
             value={info.name}
             onChange={(e) => setInfo({ ...info, name: e.target.value })}
+            className="
+              w-full
+              mb-3
+              text-base
+              border-b border-gray-300
+              focus:outline-none
+              focus:border-pink-500
+              transition-colors
+              py-3 px-3
+              placeholder-gray-500
+            "
+            style={{
+              color: COLORS.textBase,
+              backgroundColor: 'white',
+            }}
           />
 
           <input
             type="number"
             min="0"
-            className="
-              w-full p-2 mb-1 rounded border focus:outline-none focus:ring-2
-              focus:ring-pink-500 text-base
-            "
             placeholder="Enter a number for age"
-            style={{
-              backgroundColor: 'white',
-              borderColor: COLORS.muted,
-              color: COLORS.textBase,
-            }}
             value={info.age}
             onChange={handleAgeChange}
+            className="
+              w-full
+              mb-1
+              text-base
+              border-b border-gray-300
+              focus:outline-none
+              focus:border-pink-500
+              transition-colors
+              py-3 px-3
+              placeholder-gray-500
+            "
+            style={{
+              color: COLORS.textBase,
+              backgroundColor: 'white',
+            }}
           />
           {ageError && (
             <p className="text-red-600 text-sm mb-3">{ageError}</p>
           )}
 
           <input
-            className="
-              w-full p-2 mb-3 rounded border focus:outline-none focus:ring-2
-              focus:ring-pink-500 text-base
-            "
             placeholder="Gender"
-            style={{
-              backgroundColor: 'white',
-              borderColor: COLORS.muted,
-              color: COLORS.textBase,
-            }}
             value={info.gender}
             onChange={(e) => setInfo({ ...info, gender: e.target.value })}
+            className="
+              w-full
+              mb-3
+              text-base
+              border-b border-gray-300
+              focus:outline-none
+              focus:border-pink-500
+              transition-colors
+              py-3 px-3
+              placeholder-gray-500
+            "
+            style={{
+              color: COLORS.textBase,
+              backgroundColor: 'white',
+            }}
           />
 
           <input
-            className="
-              w-full p-2 mb-3 rounded border focus:outline-none focus:ring-2
-              focus:ring-pink-500 text-base
-            "
             placeholder="School"
-            style={{
-              backgroundColor: 'white',
-              borderColor: COLORS.muted,
-              color: COLORS.textBase,
-            }}
             value={info.school}
             onChange={(e) => setInfo({ ...info, school: e.target.value })}
+            className="
+              w-full
+              mb-3
+              text-base
+              border-b border-gray-300
+              focus:outline-none
+              focus:border-pink-500
+              transition-colors
+              py-3 px-3
+              placeholder-gray-500
+            "
+            style={{
+              color: COLORS.textBase,
+              backgroundColor: 'white',
+            }}
           />
-
-          <label className="mb-4 flex items-center space-x-2 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={info.robot}
-              onChange={(e) => setInfo({ ...info, robot: e.target.checked })}
-              className="h-4 w-4 border-gray-400 rounded"
-              style={{ accentColor: COLORS.brandPink }}
-            />
-            <span>I&apos;m not a robot</span>
-          </label>
 
           <button
             className="mt-2 px-6 py-2 rounded text-white font-semibold transition-all"
@@ -270,13 +310,40 @@ const UserSurvey = () => {
       className="
         min-h-screen w-screen bg-cover bg-center bg-no-repeat
         flex flex-col items-start justify-start
+        relative
       "
       style={{
-        // backgroundImage: `url('Images/Flowers.gif')`,
         backgroundColor: COLORS.floralBg,
         color: COLORS.textBase,
       }}
     >
+      {/* Button in the top-right corner to exit the survey & go back */}
+      <button
+        onClick={() => {
+          // exit the survey => step=0
+          setStep(0)
+          setPages([])
+          setResponses({})
+          setCurrentPageIndex(0)
+          setActiveQuestionIndex({})
+        }}
+        style={{
+          position: 'absolute',
+          top: '1rem',
+          right: '1rem',
+          backgroundColor: COLORS.brandPink,
+          color: 'white',
+          padding: '0.5rem 1rem',
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: 'pointer',
+        }}
+      >
+        Exit
+      </button>
+
       <div className="pt-40 px-6 w-full max-w-4xl mx-auto transition-all duration-700">
         <h2
           className="text-3xl font-bold mb-4 text-center"
@@ -359,10 +426,7 @@ const UserSurvey = () => {
         })}
       </div>
 
-      {/** 
-        Large rectangular or pill-shaped buttons with text 
-        for Next / Previous / Submit 
-      */}
+      {/* Large rectangular or pill-shaped buttons with text for Next / Previous / Submit */}
       {currentPageIndex > 0 && (
         <button
           onClick={() => setCurrentPageIndex(currentPageIndex - 1)}
@@ -376,7 +440,7 @@ const UserSurvey = () => {
             padding: '1rem 2rem',
             fontSize: '1.25rem',
             fontWeight: 'bold',
-            borderRadius: '9999px', // pill shape
+            borderRadius: '9999px',
             cursor: 'pointer',
           }}
         >

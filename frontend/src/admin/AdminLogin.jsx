@@ -27,13 +27,39 @@ const AdminLogin = ({ onLogin }) => {
   const isFormValid = username && password
 
   return (
-    <div className="min-h-screen w-screen bg-gradient-to-b from-gray-100 to-gray-200 flex items-center justify-center px-4">
+    <div className="min-h-screen w-screen bg-gradient-to-b from-gray-100 to-gray-200 flex items-center justify-center px-4 relative">
+      {/** Button in top-right to go back to the normal site ("/") */}
+      <button
+        onClick={() => {
+          window.location.href = '/'
+        }}
+        style={{
+          position: 'absolute',
+          top: '1rem',
+          right: '1rem',
+          backgroundColor: '#E91E63', // or any color
+          color: 'white',
+          padding: '0.5rem 1rem',
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: 'pointer',
+        }}
+      >
+        Normal Site
+      </button>
+
       <div className="w-full max-w-md bg-white shadow-xl rounded-xl p-8 space-y-6">
-        <h2 className="text-2xl font-semibold text-gray-800 text-center">管理员登录 (Admin Login)</h2>
+        <h2 className="text-2xl font-semibold text-gray-800 text-center">
+          管理员登录 (Admin Login)
+        </h2>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block mb-1 font-medium text-sm">用户名 (Username)</label>
+            <label className="block mb-1 font-medium text-sm">
+              用户名 (Username)
+            </label>
             <input
               type="text"
               placeholder="请输入用户名 (e.g. admin123)"
@@ -44,7 +70,9 @@ const AdminLogin = ({ onLogin }) => {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium text-sm">密码 (Password)</label>
+            <label className="block mb-1 font-medium text-sm">
+              密码 (Password)
+            </label>
             <input
               type="password"
               placeholder="请输入密码 (e.g. ********)"
