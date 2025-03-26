@@ -54,4 +54,18 @@ router.put('/page/:pageId', async (req, res) => {
     }
     })
 
+// Delete a page
+router.delete('/page/:pageId', async (req, res) => {
+  try {
+    const page = await SurveyPage.findByIdAndDelete(req.params.pageId)
+    if (!page) {
+      return res.status(404).json({ message: 'Page not found' })
+    }
+    res.json({ message: 'Page deleted successfully' })
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting page' })
+  }
+})
+
+
 export default router

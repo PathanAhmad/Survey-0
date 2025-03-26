@@ -3,7 +3,7 @@ import CreateSurvey from './CreateSurvey'
 import EditSurvey from './EditSurvey'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const AdminPanel = () => {
+const AdminPanel = ({ onLogout }) => {
   const [tab, setTab] = useState(null)
   const hasSelected = tab !== null
 
@@ -15,6 +15,16 @@ const AdminPanel = () => {
 
   return (
     <div className="min-h-screen w-screen bg-gradient-to-b from-gray-100 to-gray-200 flex flex-col items-center justify-start pt-20 px-4 relative">
+      {/* Logout Button - Top Right Corner */}
+      {hasSelected && (
+        <button
+          onClick={onLogout}
+          className="fixed top-6 right-6 z-50 bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded-full shadow transition"
+        >
+          Logout
+        </button>
+      )}
+
       {/* Floating topbar */}
       <AnimatePresence>
         {hasSelected && (
@@ -24,7 +34,7 @@ const AdminPanel = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -50, opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-grey/90 px-10 py-6 flex gap-4"
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-40 bg-grey/90 px-10 py-6 flex gap-4"
           >
             <button
               onClick={() => setTab('create')}
