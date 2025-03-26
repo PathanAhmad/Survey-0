@@ -12,9 +12,19 @@ const AdminPanel = ({ onLogout }) => {
     if (tab === 'edit') return <EditSurvey />
     return null
   }
+  
+  const handleDownloadCSV = () => {
+    window.open(`${import.meta.env.VITE_API_BASE_URL}/admin/responses/csv`)
+  }
 
   return (
     <div className="min-h-screen w-screen bg-gradient-to-b from-gray-100 to-gray-200 flex flex-col items-center justify-start pt-20 px-4 relative">
+       <button
+              onClick={handleDownloadCSV}
+              className="fixed top-6 left-6 z-50 bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-full shadow transition"
+        >
+              Download Responses CSV
+        </button>
       {/* Logout Button - Top Right Corner */}
       {hasSelected && (
         <button

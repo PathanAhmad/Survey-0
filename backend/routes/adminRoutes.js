@@ -1,5 +1,7 @@
 import express from 'express'
 import SurveyPage from '../models/SurveyPage.js'
+import SurveyResponse from '../models/SurveyResponse.js'
+import { Parser } from 'json2csv'
 
 const router = express.Router()
 
@@ -66,6 +68,73 @@ router.delete('/page/:pageId', async (req, res) => {
     res.status(500).json({ message: 'Error deleting page' })
   }
 })
+
+// Route to download responses as CSV
+router.get('/responses/csv', async (req, res) => {
+  try {
+    const responses = await SurveyResponse.find().lean();
+    if (!responses.length) return res.status(404).send('No responses found');
+
+    const pages = await SurveyPage.find().lean();
+
+    // Sequential mapping with Q prefix
+    const questionNumberMap = {};
+    let questionCounter = 1;
+    pages.forEach(page => {
+      page.questions.forEach(question => {
+        const key = question.englishText;
+        if (!questionNumberMap[key]) {
+          questionNumberMap[key] = `Q${questionCounter++}`;
+        }
+      });
+    });
+
+    const fields = ['Name', 'Age', 'Gender', 'School', 'Timestamp'];
+    for (let i = 1; i <= Object.keys(questionNumberMap).length; i++) {
+      fields.push(`Q${i}`);
+    }
+
+    // Map original 1-7 scale to new scale
+    const valueMap = { '1': 3, '2': 2, '3': 1, '4': 0, '5': -1, '6': -2, '7': -3 };
+
+    const csvRows = responses.map(response => {
+      const row = {
+        Name: response.name,
+        Age: response.age?.$numberInt ? parseInt(response.age.$numberInt) : response.age,
+        Gender: response.gender,
+        School: response.school,
+        Timestamp: new Date(response.timestamp?.$date?.$numberLong 
+                   ? parseInt(response.timestamp.$date.$numberLong) 
+                   : response.timestamp).toISOString(),
+      };
+
+      // Initialize all questions with empty strings
+      Object.values(questionNumberMap).forEach(qNum => row[qNum] = '');
+
+      // Fill answers with mapped scale values
+      response.answers.forEach(answer => {
+        const colNum = questionNumberMap[answer.questionEnglish];
+        if (colNum) {
+          const originalVal = answer.selectedValue.$numberInt || answer.selectedValue;
+          row[colNum] = valueMap[originalVal.toString()] ?? '';
+        }
+      });
+
+      return row;
+    });
+
+    const parser = new Parser({ fields });
+    const csv = parser.parse(csvRows);
+
+    res.header('Content-Type', 'text/csv; charset=utf-8');
+    res.attachment(`survey_responses_${Date.now()}.csv`);
+    res.send(csv);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error generating CSV');
+  }
+});
 
 
 export default router
