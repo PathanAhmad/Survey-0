@@ -37,7 +37,7 @@ const AdminLogin = ({ onLogin }) => {
           position: 'absolute',
           top: '1rem',
           right: '1rem',
-          backgroundColor: '#E91E63', // or any color
+          backgroundColor: '#000000', // or any color
           color: 'white',
           padding: '0.5rem 1rem',
           fontSize: '1rem',
@@ -47,7 +47,7 @@ const AdminLogin = ({ onLogin }) => {
           cursor: 'pointer',
         }}
       >
-        Normal Site
+        Survey Portal
       </button>
 
       <div className="w-full max-w-md bg-white shadow-xl rounded-xl p-8 space-y-6">
