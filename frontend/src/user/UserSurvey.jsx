@@ -370,12 +370,12 @@ const UserSurvey = () => {
               >
                 {q.chineseText}
               </p>
-              <p className="mb-4 text-lg" style={{ color: COLORS.muted }}>
+              <p className="mb-4 text-lg pb-8" style={{ color: COLORS.muted }}>
                 {q.englishText}
               </p>
 
               <div className="flex items-center justify-center space-x-3">
-                <span className="text-sm text-green-500 text-m">Agree</span>
+                <span className="text-sm text-green-500 text-m">同意 <br /> Agree</span>
 
                 {[1, 2, 3, 4, 5, 6, 7].map((num) => {
                   const circleKey = `${page._id}|${index}|${num}`
@@ -439,7 +439,7 @@ const UserSurvey = () => {
                   )
                 })}
 
-                <span className="text-sm text-purple-500 text-m">Disagree</span>
+                <span className="text-sm text-purple-500 text-m"> 不同意 <br /> Disagree</span>
               </div>
             </div>
           )
