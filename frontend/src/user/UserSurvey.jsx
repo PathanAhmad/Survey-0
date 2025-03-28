@@ -300,6 +300,13 @@ const UserSurvey = () => {
             Start Survey
           </button>
         </div>
+        <img
+          src="/Images/FullLogo.png"
+          alt="Logo"
+          className="
+            fixed top-4 left-4 w-40 z-[9999] pointer-events-none
+          "
+        />
       </div>
     )
   }
@@ -508,6 +515,13 @@ const UserSurvey = () => {
           Submit
         </button>
       )}
+      <img
+        src="/Images/FullLogo.png"
+        alt="Logo"
+        className="
+          fixed top-4 left-4 w-40 z-[9999] pointer-events-none
+        "
+      />
     </div>
   )
 }
