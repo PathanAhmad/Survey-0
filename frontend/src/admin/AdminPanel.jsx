@@ -89,14 +89,14 @@ const AdminPanel = ({ onLogout }) => {
                   onClick={() => setTab('create')}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition"
                 >
-                  Create a page(s)/question(s)
+                  Create new
                 </motion.button>
                 <motion.button
                   layout
                   onClick={() => setTab('edit')}
                   className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition"
                 >
-                  Edit/View pages/questions
+                  Edit/View
                 </motion.button>
               </div>
             </motion.div>
