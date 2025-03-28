@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useRef } from 'react'
 
 const COLORS = {
   floralBg: '#F8F8F2',
@@ -30,6 +31,8 @@ const UserSurvey = () => {
   const [activeQuestionIndex, setActiveQuestionIndex] = useState({})
   const [currentPageIndex, setCurrentPageIndex] = useState(0)
   const [loading, setLoading] = useState(false)
+
+  const questionRefs = useRef({})
 
   // For age check
   const [ageError, setAgeError] = useState('')
@@ -82,14 +85,24 @@ const UserSurvey = () => {
       ...prev,
       [key]: value,
     }))
-
+  
     setActiveQuestionIndex((prev) => {
+      const nextIndex = index + 1
       if (index === prev[pageId]) {
-        return { ...prev, [pageId]: index + 1 }
+        // Delay scroll slightly to ensure DOM has rendered the new question
+        setTimeout(() => {
+          const nextKey = `${pageId}|${nextIndex}`
+          questionRefs.current[nextKey]?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }, 100)
+        return { ...prev, [pageId]: nextIndex }
       }
       return prev
     })
   }
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentPageIndex])
 
   const handleSubmit = async () => {
     const answers = []
@@ -368,7 +381,10 @@ const UserSurvey = () => {
           return (
             <div
               key={index}
-              // (2) More vertical spacing + thin gray line
+              ref={(el) => {
+                const questionKey = `${page._id}|${index}`
+                if (el) questionRefs.current[questionKey] = el
+              }}
               className={`mb-16 flex flex-col items-center text-center ${isDisabled} w-full border-b border-gray-300 pb-16`}
             >
               <p
