@@ -31,6 +31,11 @@ const UserSurvey = () => {
   const [activeQuestionIndex, setActiveQuestionIndex] = useState({})
   const [currentPageIndex, setCurrentPageIndex] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [logoAtTop, setLogoAtTop] = useState(false)
+  const [logoSpawned, setLogoSpawned] = useState(false)
+  const [logoVisible, setLogoVisible] = useState(false)
+
+
 
   const questionRefs = useRef({})
 
@@ -101,8 +106,24 @@ const UserSurvey = () => {
   }
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 100)
   }, [currentPageIndex])
+
+  useEffect(() => {
+    if (step === 0) {
+      setLogoVisible(false)
+      setTimeout(() => {
+        setLogoVisible(true)
+      }, 100) // Slight delay so it's not visible on first paint
+  
+      const timer = setTimeout(() => setLogoAtTop(true), 1000)
+      return () => clearTimeout(timer)
+    } else {
+      setLogoAtTop(true)
+    }
+  }, [step])  
 
   const handleSubmit = async () => {
     const answers = []
@@ -259,8 +280,7 @@ const UserSurvey = () => {
             <p className="text-red-600 text-sm mb-3">{ageError}</p>
           )}
 
-          <input
-            placeholder="性别 (Gender)"
+          <select
             value={info.gender}
             onChange={(e) => setInfo({ ...info, gender: e.target.value })}
             className="
@@ -273,12 +293,19 @@ const UserSurvey = () => {
               transition-colors
               py-3 px-3
               placeholder-gray-500
+              bg-white
             "
             style={{
               color: COLORS.textBase,
               backgroundColor: 'white',
             }}
-          />
+          >
+            <option value="" disabled>
+              性别 (Gender)
+            </option>
+            <option value="Male">男 (Male)</option>
+            <option value="Female">女 (Female)</option>
+          </select>
 
           <input
             placeholder="学校 (School)"
@@ -316,9 +343,13 @@ const UserSurvey = () => {
         <img
           src="/Images/FullLogo.png"
           alt="Logo"
-          className="
-            fixed top-4 left-4 w-40 z-[9999] pointer-events-none
-          "
+          className={`
+            fixed z-[9999] pointer-events-none transition-all duration-1000 ease-in-out
+            ${logoVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}
+            ${logoAtTop
+              ? 'top-10 left-10 w-72'
+              : 'top-1/2 left-1/2 w-72 transform -translate-x-1/2 -translate-y-1/2'}
+          `}
         />
       </div>
     )
@@ -535,7 +566,7 @@ const UserSurvey = () => {
         src="/Images/FullLogo.png"
         alt="Logo"
         className="
-          fixed top-4 left-4 w-40 z-[9999] pointer-events-none
+          fixed top-10 left-10 w-72 z-[9999] pointer-events-none
         "
       />
     </div>
