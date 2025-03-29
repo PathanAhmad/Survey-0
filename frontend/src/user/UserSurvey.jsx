@@ -94,7 +94,6 @@ const UserSurvey = () => {
     setActiveQuestionIndex((prev) => {
       const nextIndex = index + 1
       if (index === prev[pageId]) {
-        // Delay scroll slightly to ensure DOM has rendered the new question
         setTimeout(() => {
           const nextKey = `${pageId}|${nextIndex}`
           questionRefs.current[nextKey]?.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -455,10 +454,10 @@ const UserSurvey = () => {
                   // if hovered or selected => show check
                   const showCheck = isHovered || isSelected
 
-                  let size = 'w-6 h-6'
-                  if (num === 1 || num === 7) size = 'w-12 h-12'
-                  if (num === 2 || num === 6) size = 'w-10 h-10'
-                  if (num === 3 || num === 5) size = 'w-8 h-8'
+                  let size = 'w-10 h-10'
+                  if (num === 1 || num === 7) size = 'w-17 h-17'
+                  if (num === 2 || num === 6) size = 'w-15 h-15'
+                  if (num === 3 || num === 5) size = 'w-12 h-12'
 
                   return (
                     <label key={circleKey} className="cursor-pointer">
