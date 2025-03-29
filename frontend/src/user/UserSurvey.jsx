@@ -340,7 +340,7 @@ const UserSurvey = () => {
           </button>
         </div>
         <img
-          src="/Images/FullLogo.png"
+          src="/Images/NewFullLogo.png"
           alt="Logo"
           className={`
             fixed z-[9999] pointer-events-none transition-all duration-1000 ease-in-out
@@ -562,7 +562,7 @@ const UserSurvey = () => {
         </button>
       )}
       <img
-        src="/Images/FullLogo.png"
+        src="/Images/NewFullLogo.png"
         alt="Logo"
         className="
           fixed top-10 left-10 w-72 z-[9999] pointer-events-none
