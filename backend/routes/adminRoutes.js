@@ -128,7 +128,7 @@ router.get('/responses/csv', async (req, res) => {
 
     res.header('Content-Type', 'text/csv; charset=utf-8');
     res.attachment(`survey_responses_${Date.now()}.csv`);
-    res.send(csv);
+    res.send('\uFEFF' + csv);
 
   } catch (err) {
     console.error(err);
