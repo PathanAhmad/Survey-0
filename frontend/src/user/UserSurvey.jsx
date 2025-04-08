@@ -35,6 +35,7 @@ const UserSurvey = () => {
   const [logoSpawned, setLogoSpawned] = useState(false)
   const [logoVisible, setLogoVisible] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const isSubmittingRef = useRef(false)
 
 
 
@@ -128,7 +129,8 @@ const UserSurvey = () => {
 
 
   const handleSubmit = async () => {
-    if (submitting) return  // Prevent duplicate clicks
+    if (isSubmittingRef.current) return
+    isSubmittingRef.current = true
     setSubmitting(true)
   
     const answers = []
@@ -167,6 +169,7 @@ const UserSurvey = () => {
       console.error('Submission failed:', err)
       alert('Submission failed')
     } finally {
+      isSubmittingRef.current = false
       setSubmitting(false)
     }
   }  
