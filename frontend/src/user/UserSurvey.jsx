@@ -34,6 +34,8 @@ const UserSurvey = () => {
   const [logoAtTop, setLogoAtTop] = useState(false)
   const [logoSpawned, setLogoSpawned] = useState(false)
   const [logoVisible, setLogoVisible] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+
 
 
 
@@ -47,7 +49,7 @@ const UserSurvey = () => {
 
   const handleAgeChange = (e) => {
     const val = e.target.value
-    if (val === '' || parseInt(val) < 0) {
+    if (val === '' || isNaN(parseInt(val)) || parseInt(val) < 0){
       setAgeError('Age must be a non-negative number.')
       setInfo({ ...info, age: '' })
     } else {
@@ -124,7 +126,11 @@ const UserSurvey = () => {
     }
   }, [step])  
 
+
   const handleSubmit = async () => {
+    if (submitting) return  // Prevent duplicate clicks
+    setSubmitting(true)
+  
     const answers = []
     for (const page of pages) {
       page.questions.forEach((q, idx) => {
@@ -140,16 +146,16 @@ const UserSurvey = () => {
         }
       })
     }
-
+  
     const payload = { ...info, answers }
-
+  
     try {
       await fetch(`${baseURL}/survey/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
-
+  
       alert('Submitted successfully!')
       // reset
       setStep(0)
@@ -160,8 +166,10 @@ const UserSurvey = () => {
     } catch (err) {
       console.error('Submission failed:', err)
       alert('Submission failed')
+    } finally {
+      setSubmitting(false)
     }
-  }
+  }  
 
   if (loading) {
     return (
@@ -543,22 +551,22 @@ const UserSurvey = () => {
       ) : (
         <button
           onClick={handleSubmit}
-          disabled={!allAnswered}
+          disabled={!allAnswered || submitting} // 🔒 also disable if submitting
           style={{
             position: 'fixed',
             top: '50%',
             right: '2rem',
             transform: 'translateY(-50%)',
-            backgroundColor: allAnswered ? COLORS.brandGreen : COLORS.buttonDisabled,
+            backgroundColor: allAnswered && !submitting ? COLORS.brandGreen : COLORS.buttonDisabled,
             color: 'white',
             padding: '1rem 2rem',
             fontSize: '1.25rem',
             fontWeight: 'bold',
             borderRadius: '9999px',
-            cursor: allAnswered ? 'pointer' : 'not-allowed',
+            cursor: allAnswered && !submitting ? 'pointer' : 'not-allowed',
           }}
         >
-          Submit
+          {submitting ? 'Submitting...' : 'Submit'}
         </button>
       )}
       <img
